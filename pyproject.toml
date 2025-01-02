@@ -1,0 +1,15 @@
+[project]
+name = "phoneautomation"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "~=3.12"
+dependencies = [
+    "numpy>=2.2.1",
+    "opencv-python>=4.10.0.84",
+    "setuptools>=75.6.0",
+    "uiautomator2>=2.16.26",
+]
+
+
+
