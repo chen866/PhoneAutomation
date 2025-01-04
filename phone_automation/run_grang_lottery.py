@@ -96,9 +96,35 @@ class GrangLottery:
                 logger.warning(f"未找到匹配图片: {image_key}")
                 return False
 
+    def swipe(
+        self,
+        start_position: tuple[int, int],
+        relative_distance: tuple[int, int],
+        random_range: tuple[int, int] = (0, 0),
+        duration: float = 0.1,
+    ):
+        _start_position = (
+            start_position[0] + random.randint(-random_range[0], random_range[0]),
+            start_position[1] + random.randint(-random_range[1], random_range[1]),
+        )
+        end_position = (
+            start_position[0] + relative_distance[0] + random.randint(-random_range[0], random_range[0]),
+            start_position[1] + relative_distance[1] + random.randint(-random_range[1], random_range[1]),
+        )
+        self.d.swipe(*_start_position, *end_position, duration=duration)
+
+    def swipe_down(
+        self,
+        start_position: tuple[int, int],
+        distance: int = 500,
+        random_range: tuple[int, int] = (0, 0),
+        duration: float = 0.1,
+    ):
+        self.swipe(start_position, (0, -distance), random_range, duration)
+
     def run_go_to_lottery(self):
         # 庄园 - 房间
-        self.find_and_click("grang_lottery_thumbnail", no_find_raise=False)
+        self.find_and_click("grang_lottery_thumbnail", no_find_raise=False, offset=(-100, -100))
         # 房间 - 抽奖
         self.find_and_click("grang_lottery_thumbnail_in_room", no_find_raise=False)
 
@@ -133,18 +159,8 @@ class GrangLottery:
                 break
             for i in range(6):
                 time.sleep(3)
-                # 按下并向下滑动
-                start_position = (700, 1200)
-                relative_distance = (0, -500)
-                _start_position = (
-                    start_position[0] + random.randint(-40, 40),
-                    start_position[1] + random.randint(-40, 40),
-                )
-                end_position = (
-                    start_position[0] + relative_distance[0] + random.randint(-40, 40),
-                    start_position[1] + relative_distance[1] + random.randint(-40, 40),
-                )
-                d.swipe(*_start_position, *end_position, duration=0.1)
+                # 向下滑动
+                self.swipe_down((700, 1200), 500, (40, 40), 0.1)
             # 返回
             d.press("BACK")
             # 领取奖励
@@ -167,32 +183,6 @@ class GrangLottery:
             if not ok:
                 logger.error("没有找到 抽奖 关闭结果")
                 break
-
-    def swipe(
-        self,
-        start_position: tuple[int, int],
-        relative_distance: tuple[int, int],
-        random_range: tuple[int, int] = (0, 0),
-        duration: float = 0.1,
-    ):
-        _start_position = (
-            start_position[0] + random.randint(-random_range[0], random_range[0]),
-            start_position[1] + random.randint(-random_range[1], random_range[1]),
-        )
-        end_position = (
-            start_position[0] + relative_distance[0] + random.randint(-random_range[0], random_range[0]),
-            start_position[1] + relative_distance[1] + random.randint(-random_range[1], random_range[1]),
-        )
-        self.d.swipe(*_start_position, *end_position, duration=duration)
-
-    def swipe_down(
-        self,
-        start_position: tuple[int, int],
-        distance: int = 500,
-        random_range: tuple[int, int] = (0, 0),
-        duration: float = 0.1,
-    ):
-        self.swipe(start_position, (0, -distance), random_range, duration)
 
     def run(self):
         self.run_go_to_lottery()
