@@ -8,4 +8,12 @@ wheels/
 
 # Virtual environments
 .venv
-img/screenshot*
+*.lock
+.env
+
+# IDE
+.idea
+.vscode
+
+# Screenshot
+**/screenshot*

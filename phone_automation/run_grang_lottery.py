@@ -1,10 +1,11 @@
+import os
 import logging
 import random
 import time
 
 import uiautomator2 as u2
 
-from common import find_match_image_position, load_image, screenshot
+from phone_automation.common import find_match_image_position, load_image, screenshot
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -43,6 +44,9 @@ def find_and_click(
             return False
 
 
+package_dir = os.path.dirname(os.path.abspath(__file__))
+
+
 class GrangLottery:
     def __init__(self, d):
         self.d = d
@@ -53,8 +57,8 @@ class GrangLottery:
 
     def load_img(self, image_key):
         if image_key not in self.imgs:
-            path = f"img/{image_key}.png"
-            self.imgs[image_key] = load_image(path)
+            img_path = os.path.join(package_dir, "static", "img", f"{image_key}.png")
+            self.imgs[image_key] = load_image(img_path)
         return self.imgs[image_key]
 
     def find_and_click(
