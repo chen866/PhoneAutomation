@@ -1,4 +1,4 @@
-import os
+import importlib
 import logging
 import random
 import time
@@ -9,6 +9,8 @@ from phone_automation.common import find_match_image_position, load_image, scree
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+package_dir = importlib.resources.files("phone_automation")
 
 
 def find_and_click(
@@ -44,9 +46,6 @@ def find_and_click(
             return False
 
 
-package_dir = os.path.dirname(os.path.abspath(__file__))
-
-
 class GrangLottery:
     def __init__(self, d):
         self.d = d
@@ -57,7 +56,7 @@ class GrangLottery:
 
     def load_img(self, image_key):
         if image_key not in self.imgs:
-            img_path = os.path.join(package_dir, "static", "img", f"{image_key}.png")
+            img_path = package_dir / "static" / "img" / f"{image_key}.png"
             self.imgs[image_key] = load_image(img_path)
         return self.imgs[image_key]
 
@@ -131,11 +130,11 @@ class GrangLottery:
     def run_collect_task1(self):
         # 抽奖 - 任务饲料兑换
         for i in range(2):
-            ok = self.find_and_click("grang_lottery_task1", offset=(750, 0), no_find_raise=False, wait=0.5, retry=0)
+            ok = self.find_and_click("grang_lottery_task1", offset=(750, 0), no_find_raise=False, wait=1, retry=0)
             if not ok:
                 logger.error("没有找到 任务 饲料兑换")
                 break
-            ok = self.find_and_click("grang_lottery_task1_btn", no_find_raise=False, wait=0.5, retry=0)
+            ok = self.find_and_click("grang_lottery_task1_btn", no_find_raise=False, wait=1, retry=0)
             if not ok:
                 logger.error("没有找到 任务 饲料兑换 - 确认兑换 按钮")
                 break
@@ -153,14 +152,15 @@ class GrangLottery:
     def run_collect_task2(self):
         # 抽奖 - 任务杂货铺
         for i in range(3):
-            ok = self.find_and_click("grang_lottery_task2", offset=(750, 0), no_find_raise=False, wait=0.5, retry=0)
+            ok = self.find_and_click("grang_lottery_task2", offset=(750, 0), no_find_raise=False, wait=1, retry=0)
             if not ok:
                 logger.error("没有找到 任务 杂货铺")
                 break
             for i in range(6):
-                time.sleep(3)
+                time.sleep(2)
                 # 向下滑动
                 self.swipe_down((700, 1200), 500, (40, 40), 0.1)
+                time.sleep(1)
             # 返回
             d.press("BACK")
             # 领取奖励
