@@ -5,8 +5,6 @@ import uiautomator2 as u2
 from phone_automation.common import package_dir
 
 d = u2.connect()
-# 获取 uiautomator2 的 Image 对象
-img_screen = d.screenshot()
 
 # 保存到图片文件夹
 img_dir = package_dir / "static" / "img" / f"screenshot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
