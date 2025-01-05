@@ -1,16 +1,13 @@
-import importlib
 import logging
 import random
 import time
 
 import uiautomator2 as u2
 
-from phone_automation.common import find_match_image_position, load_image, screenshot
+from phone_automation.common import find_match_image_position, load_image, package_dir, screenshot
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
-
-package_dir = importlib.resources.files("phone_automation")
 
 
 def find_and_click(
@@ -29,12 +26,12 @@ def find_and_click(
         template_cv = load_image(image_path)
         position = find_match_image_position(screen_cv, template_cv, no_find_raise=False)
         if position[0] is not None:
-            print(f"匹配到的位置: {position}, 图片: {image_path}")
+            logger.debug(f"匹配到的位置: {position}, 图片: {image_path}")
             x, y = position
             if offset_x != 0 or offset_y != 0:
                 x += offset_x
                 y += offset_y
-                logger.info(f"偏移后的位置: {x}, {y}")
+                logger.debug(f"偏移后的位置: {x}, {y}")
             d.click(x, y)
             return True
         time.sleep(retry_interval)
@@ -79,12 +76,12 @@ class GrangLottery:
 
             position = find_match_image_position(self.screen_cv, template_cv, no_find_raise=False)
             if position[0] is not None:
-                print(f"匹配到的位置: {position}, 图片: {image_key}")
+                logger.debug(f"匹配到的位置: {position}, 图片: {image_key}")
                 x, y = position
                 if offset_x != 0 or offset_y != 0:
                     x += offset_x
                     y += offset_y
-                    logger.info(f"偏移后的位置: {x}, {y}")
+                    logger.debug(f"偏移后的位置: {x}, {y}")
                 d.click(x, y)
                 return True
             time.sleep(retry_interval)
@@ -122,10 +119,12 @@ class GrangLottery:
         self.swipe(start_position, (0, -distance), random_range, duration)
 
     def run_go_to_lottery(self):
-        # 庄园 - 房间
-        self.find_and_click("grang_lottery_thumbnail", no_find_raise=False, offset=(-100, -100))
-        # 房间 - 抽奖
-        self.find_and_click("grang_lottery_thumbnail_in_room", no_find_raise=False)
+        # 首页 -> 庄园
+        self.find_and_click("grang_text", no_find_raise=False, retry=0, wait=0.5)
+        # 庄园 -> 房间
+        self.find_and_click("grang_lottery_thumbnail", no_find_raise=False, offset=(-100, -100), wait=2)
+        # 房间 -> 抽奖
+        self.find_and_click("grang_lottery_thumbnail_in_room", no_find_raise=False, wait=2)
 
     def run_collect_task1(self):
         # 抽奖 - 任务饲料兑换
@@ -162,7 +161,8 @@ class GrangLottery:
                 self.swipe_down((700, 1200), 500, (40, 40), 0.1)
                 time.sleep(1)
             # 返回
-            d.press("BACK")
+            logger.debug("返回")
+            self.d.press("BACK")
             # 领取奖励
             ok = self.find_and_click("grang_lottery_entries_collect", retry=0, no_find_raise=False)
             if ok:

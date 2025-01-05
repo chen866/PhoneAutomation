@@ -1,3 +1,4 @@
+import importlib
 import logging
 
 import cv2
@@ -5,6 +6,8 @@ import numpy as np
 import uiautomator2 as u2
 
 logger = logging.getLogger(__name__)
+
+package_dir = importlib.resources.files("phone_automation")
 
 
 def load_image(img_path):
@@ -49,7 +52,7 @@ def find_match_image_position(screen_cv: np.ndarray, template_cv: np.ndarray, th
             center_x = pt[0] + target_width // 2
             center_y = pt[1] + target_height // 2
 
-            logger.info(f"找到匹配图片，点击位置: ({center_x}, {center_y})")
+            logger.debug(f"找到匹配图片，点击位置: ({center_x}, {center_y})")
 
             center_x = int(center_x)
             center_y = int(center_y)
