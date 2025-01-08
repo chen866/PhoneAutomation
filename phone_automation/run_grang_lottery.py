@@ -186,11 +186,13 @@ class GrangLottery:
 
     def run(self):
         self.run_go_to_lottery()
-        self.swipe_down((700, 1200), 500, (40, 40), 0.1)
-        self.run_collect_task1()
-        self.run_collect_entries()
+        # task 2
         self.swipe_down((700, 1200), 500, (40, 40), 0.1)
         self.run_collect_task2()
+        self.run_collect_entries()
+        # task 1
+        self.swipe_down((700, 1200), 500, (40, 40), 0.1)
+        self.run_collect_task1()
         self.run_collect_entries()
         self.run_lottery()
 
