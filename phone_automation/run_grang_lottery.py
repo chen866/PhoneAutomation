@@ -120,11 +120,11 @@ class GrangLottery:
 
     def run_go_to_lottery(self):
         # 首页 -> 庄园
-        self.find_and_click("grang_text", no_find_raise=False, retry=0, wait=0.5)
+        self.find_and_click("grang_text", no_find_raise=False, wait=0.5, retry=1)
         # 庄园 -> 房间
-        self.find_and_click("grang_lottery_thumbnail", no_find_raise=False, offset=(-100, -100), wait=2)
+        self.find_and_click("grang_lottery_thumbnail", no_find_raise=False, offset=(-100, -100), wait=3, retry=1)
         # 房间 -> 抽奖
-        self.find_and_click("grang_lottery_thumbnail_in_room", no_find_raise=False, wait=2)
+        self.find_and_click("grang_lottery_thumbnail_in_room", no_find_raise=False, wait=3, retry=1)
 
     def run_collect_task1(self):
         # 抽奖 - 任务饲料兑换
@@ -151,7 +151,7 @@ class GrangLottery:
     def run_collect_task2(self):
         # 抽奖 - 任务杂货铺
         for i in range(3):
-            ok = self.find_and_click("grang_lottery_task2", offset=(750, 0), no_find_raise=False, wait=1, retry=0)
+            ok = self.find_and_click("grang_lottery_task2", offset=(750, 0), no_find_raise=False, wait=2, retry=1)
             if not ok:
                 logger.error("没有找到 任务 杂货铺")
                 break
@@ -161,10 +161,13 @@ class GrangLottery:
                 self.swipe_down((700, 1200), 500, (40, 40), 0.1)
                 time.sleep(1)
             # 返回
-            logger.debug("返回")
-            self.d.press("BACK")
+            if ok := self.find_and_click("grang_lottery_task2_flag2", no_find_raise=False, wait=2, retry=1):
+                logger.info("任务 杂货铺 结束, 返回")
+                self.d.press("BACK")
+            else:
+                logger.warning("没有找到 任务 杂货铺 结束标志 grang_lottery_task2_flag2, 不执行【返回】")
             # 领取奖励
-            ok = self.find_and_click("grang_lottery_entries_collect", retry=0, no_find_raise=False)
+            ok = self.find_and_click("grang_lottery_entries_collect", wait=2, retry=1, no_find_raise=False)
             if ok:
                 logger.info("领取次数成功")
             else:
