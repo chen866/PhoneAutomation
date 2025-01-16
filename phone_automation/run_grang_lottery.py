@@ -122,6 +122,9 @@ class GrangLottery:
         # 首页 -> 庄园
         logger.info("开始 首页 -> 庄园")
         self.find_and_click("grang_text", no_find_raise=False, wait=1, retry=1)
+        # 活动消息
+        if self.find_and_click("grang_lottery_close", no_find_raise=False, retry=0, wait=3):
+            logger.info("关闭 活动消息")
         # 庄园 -> 房间
         logger.info("开始 庄园 -> 房间")
         self.find_and_click("grang_lottery_thumbnail", no_find_raise=False, wait=4, retry=1)
@@ -161,16 +164,22 @@ class GrangLottery:
             if not ok:
                 logger.error("没有找到 任务 杂货铺")
                 break
+            job_ok = True
             for j in range(6):
                 time.sleep(2)
                 # 向下滑动
                 self.swipe_down((700, 1200), 100, (40, 40), 0.1)
                 time.sleep(1)
                 # 检查
-                if j == 0:
-                    if ok := self.find_and_click("grang_lottery_task2_flag1", no_find_raise=False, wait=2, retry=1):
+                if j == 1:
+                    ok = self.find_and_click("grang_lottery_task2_flag1", no_find_raise=False, wait=0, retry=0)
+                    if not ok:
                         logger.info("任务 杂货铺 不在任务中, 直接停止本次任务")
+                        job_ok = False
                         break
+            # 未检查到任务, 直接停止本次任务
+            if not job_ok:
+                continue
             # 返回
             if ok := self.find_and_click("grang_lottery_task2_flag2", no_find_raise=False, wait=2, retry=1):
                 logger.info("任务 杂货铺 结束, 返回")
@@ -193,7 +202,7 @@ class GrangLottery:
                 logger.error("没有找到 抽奖 次数")
                 break
             # 抽奖 - 关闭结果
-            ok = self.find_and_click("grang_lottery_close", no_find_raise=False, retry=0, wait=3)
+            ok = self.find_and_click("grang_lottery_close", no_find_raise=False, retry=0, wait=2)
             if not ok:
                 logger.error("没有找到 抽奖 关闭结果")
                 break
